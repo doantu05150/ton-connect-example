@@ -19,3 +19,14 @@ References: https://docs.ton.org/develop/dapps/ton-connect/wallet, https://www.n
 ```
 
 ### 3. See /src/ton-connect.ts file for details
+
+
+### 4. Run project
+
+```
+npm i
+
+npm run dev
+```
+
+http://localhost:5173/
