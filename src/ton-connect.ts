@@ -76,6 +76,60 @@ export function tonConnect(elementRoot: HTMLButtonElement) {
     }
   }
 
+  const localStorageKey = 'meweeee.jwtttt'
+  const payloadTTLMS = 1000 * 60 * 20;
+
+  async function signMessage() {
+    if (!tonConnectUI) {
+      openModal()
+      return
+    }
+    if (tonConnectUI) {
+      const wallet = tonConnectUI.wallet
+      if (!wallet) {
+        localStorage.removeItem(localStorageKey);
+
+        const refreshPayload = async () => {
+          if (!tonConnectUI) {
+            return;
+          }
+          tonConnectUI.setConnectRequestParameters({ state: 'loading' });
+          // const value = await backendAuth.generatePayload();
+          const value: any = 'xxx lấy từ BE trả về. /generatePayload BE'
+          if (!value) {
+            tonConnectUI.setConnectRequestParameters(null);
+          } else {
+            tonConnectUI.setConnectRequestParameters({state: 'ready', value});
+          }
+        }
+
+        refreshPayload();
+        setInterval(refreshPayload, payloadTTLMS);
+        return
+      }
+      const token = localStorage.getItem(localStorageKey);
+      if (token) {
+        return;
+      }
+      
+      const connectItems = wallet?.connectItems
+      if (connectItems?.tonProof && !('error' in connectItems.tonProof) && wallet?.account) {
+        // const res = await backendAuth.checkProof(connectItems.tonProof?.proof, wallet.account)
+        const result = 'xxx lấy từ BE trả về. /checkProof BE'
+        if (result) {
+          // Lưu access_token vào localStorage
+          localStorage.setItem(localStorageKey, result);
+        } else {
+          alert('Please try another wallet');
+          tonConnectUI.disconnect();
+        }
+      } else {
+        alert('Please try another wallet');
+        tonConnectUI.disconnect();
+      }
+    }
+  }
+
   tonConnectUI?.onStatusChange((state) => {
     console.log(333, state, tonConnectUI?.connected)
     syncData(state?.account)
